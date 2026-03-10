@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa 3D de Sujeira</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="noise-layer"></div>
+
+    <main class="app-shell">
+        <header class="hero">
+            <p class="kicker">Painel operacional de limpeza industrial</p>
+        </header>
+
+        <section class="layout">
+            <article class="card viewer">
+                <div class="viewer-head">
+                    <div>
+                        <h2>Mapa 3D</h2>
+                        <p id="lastUpdate" class="muted">Ultima leitura: --</p>
+                    </div>
+                    <div class="summary">
+                        <div class="chip">
+                            <strong id="avgLevel">0%</strong>
+                            <span>Media</span>
+                        </div>
+                        <div class="chip">
+                            <strong id="cleanCount">0</strong>
+                            <span>Limpos</span>
+                        </div>
+                        <div class="chip">
+                            <strong id="criticalCount">0</strong>
+                            <span>Criticos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="chartWrap" class="chart-wrap">
+                    <svg id="chart3d" role="img" aria-label="Mapa 3D de niveis de sujeira por TAG"></svg>
+                    <div id="tooltip" class="tooltip" hidden></div>
+                </div>
+
+                <ul class="legend">
+                    <li><span class="swatch swatch-clean"></span>Faixa limpa</li>
+                    <li><span class="swatch swatch-dust"></span>Acumulo moderado de po</li>
+                    <li><span class="swatch swatch-coal"></span>Acumulo moderado de carvao</li>
+                    <li><span class="swatch swatch-critical"></span>Acumulo critico</li>
+                </ul>
+            </article>
+
+            <aside class="card controls">
+                <h2>Edicao de dados</h2>
+                <p class="muted">
+                    Atualize os valores da tabela e confirme em <strong>Aplicar dados</strong>.
+                </p>
+
+                <div class="input-table-container">
+                    <table id="inputTable">
+                        <thead>
+                            <tr>
+                                <th>TAG</th>
+                                <th>Nivel (%)</th>
+                                <th>Data da leitura</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas geradas via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="actions">
+                    <button id="applyBtn" class="btn btn-primary" type="button">Aplicar dados</button>
+                </div>
+
+                <p id="statusMsg" class="status"></p>
+
+                <p class="hint">
+                    Atalhos JS prontos para uso:
+                    <code>atualizarNivel(tag, percentual)</code> e
+                    <code>montarMapa3D(dados)</code>.
+                </p>
+            </aside>
+        </section>
+
+        <article class="card schematic-card">
+            <div class="viewer-head">
+                <h2>Layout esquematico - rota BIO</h2>
+                <div class="schematic-tools">
+                    <label class="toggle-layer">
+                        <input id="toggleObsLayer" type="checkbox" checked>
+                        Exibir camada de anomalias
+                    </label>
+                    <p id="obsCount" class="muted obs-count">0 anomalias abertas - camada ativa</p>
+                </div>
+            </div>
+            <div id="mapaEsquemaContainer" class="mapa-esquema-wrap"></div>
+        </article>
+    </main>
+
+    <!-- Modal de Detalhes e Upload -->
+    <div id="detailModal" class="modal-overlay" hidden>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">TAG</h2>
+                <button id="modalClose" class="btn-icon" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info" id="modalInfo">
+                    <!-- Detalhes injetados via JS -->
+                </div>
+                <div class="modal-image-section">
+                    <label class="image-upload-label">
+                        <img id="modalImg" src="" alt="Imagem do local" class="modal-img-preview" title="Clique para alterar a imagem">
+                        <span class="upload-hint">Clique na imagem para alterar (Max 800px)</span>
+                        <input type="file" id="modalFileInput" accept="image/*" style="display: none;">
+                    </label>
+                    <button id="modalRemoveImg" class="btn btn-ghost btn-remove-photo" type="button">Remover foto do local</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "mapa3d-backend",
+  "private": true,
+  "version": "1.1.0",
+  "description": "Backend do painel Mapa 3D de Sujeira",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
