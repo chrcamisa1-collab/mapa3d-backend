@@ -3,12 +3,14 @@ const fs   = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
 
-// Configuração do carteiro (Gmail)
+/// Configuração do carteiro (Gmail - Forçando porta segura para o Render)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: 'chrcamisa1@gmail.com',
-        pass: 'byzodrehbdkxghae' // A tua palavra-passe sem espaços
+        pass: 'byzodrehbdkxghae' // A sua palavra-passe de app
     }
 });
 
