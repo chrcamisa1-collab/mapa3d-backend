@@ -1,7 +1,44 @@
 const http = require("http");
 const fs   = require("fs");
 const path = require("path");
+const nodemailer = require("nodemailer");
 
+// Configuração do carteiro (Gmail)
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'chrcamisa1@gmail.com',
+        pass: 'byzodrehbdkxghae' // A tua palavra-passe sem espaços
+    }
+});
+
+// Função que envia o resumo da atualização
+function enviarAlertaDeAtualizacao(quantidadeItens) {
+    const mailOptions = {
+        from: 'chrcamisa1@gmail.com',
+        to: 'chrcamisa1@gmail.com', 
+        subject: '🔄 ALERTA GERDAU: Painel Mapa 3D Atualizado',
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ccc; border-radius: 8px; max-width: 600px;">
+                <h2 style="color: #195b86; margin-top: 0;">Atualização de Limpeza Registada</h2>
+                <p style="font-size: 16px;">Foi feito um novo registo de apontamentos na gestão da Rota de Carvão.</p>
+                <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #195b86; margin: 20px 0;">
+                    <ul style="font-size: 16px; margin: 0; padding-left: 20px;">
+                        <li style="margin-bottom: 5px;"><strong>Máquinas reportadas:</strong> ${quantidadeItens} equipamentos</li>
+                        <li><strong>Data/Hora:</strong> ${new Date().toLocaleString('pt-BR')}</li>
+                    </ul>
+                </div>
+                <p style="font-size: 16px;">Acede ao painel online para verificar o estado atualizado.</p>
+                <a href="https://quiet-sable-ef0aed.netlify.app/" style="display: inline-block; padding: 10px 20px; color: white; background-color: #195b86; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px;">Abrir Mapa 3D</a>
+            </div>
+        `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) console.log("❌ Erro ao enviar email:", error);
+        else console.log("✅ E-mail de atualização disparado com sucesso!");
+    });
+}
 const HOST      = process.env.HOST || "0.0.0.0";
 const PORT      = Number(process.env.PORT) || 10000;
 const DATA_FILE = path.join(__dirname, "dados_persistidos.json");
@@ -91,6 +128,12 @@ async function router(req, res) {
         if (!salvarDados(dados)) return json(res, 500, { erro: "Falha ao salvar" });
 
         console.log(`  -> Salvos ${dados.items.length} itens`);
+        // --- GATILHO: Dispara o e-mail a cada atualização ---
+        if (dados.items && dados.items.length > 0) {
+            enviarAlertaDeAtualizacao(dados.items.length);
+        }
+        // ----------------------------------------------------
+    
         return json(res, 200, { ok: true, itens: dados.items.length });
     }
 
